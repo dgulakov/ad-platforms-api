@@ -1,3 +1,7 @@
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Hosting;
+using AdPlatformsApi.Model;
+
 namespace AdPlatformsApi
 {
     public class Program
@@ -7,6 +11,8 @@ namespace AdPlatformsApi
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddSingleton<IAdPlatformsCollection, AdPlatformsCollection>();
+            builder.Services.AddSingleton<AdPlatformsRepository>();
 
             builder.Services.AddControllers();
 
