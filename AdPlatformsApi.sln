@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36310.24 d17.14
+VisualStudioVersion = 17.14.36310.24
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdPlatformsApi", "AdPlatformsApi/AdPlatformsApi.csproj", "{6369FE3B-EE9D-4772-8FC8-18993251598B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdPlatformsApi", "AdPlatformsApi\AdPlatformsApi.csproj", "{6369FE3B-EE9D-4772-8FC8-18993251598B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdPlatformsApiTests", "AdPlatformsApiTests\AdPlatformsApiTests.csproj", "{BEC7992C-9F1F-4AC1-AA47-AE22EB37EA90}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{6369FE3B-EE9D-4772-8FC8-18993251598B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6369FE3B-EE9D-4772-8FC8-18993251598B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6369FE3B-EE9D-4772-8FC8-18993251598B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEC7992C-9F1F-4AC1-AA47-AE22EB37EA90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEC7992C-9F1F-4AC1-AA47-AE22EB37EA90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEC7992C-9F1F-4AC1-AA47-AE22EB37EA90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEC7992C-9F1F-4AC1-AA47-AE22EB37EA90}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

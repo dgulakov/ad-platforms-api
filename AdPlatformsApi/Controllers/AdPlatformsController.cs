@@ -1,11 +1,12 @@
 using AdPlatformsApi.Model;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.RegularExpressions;
 
 namespace AdPlatformsApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AdPlatformsController(AdPlatformsRepository platformsRepository) : ControllerBase
+    public partial class AdPlatformsController(IAdPlatformsRepository platformsRepository) : ControllerBase
     {
         private static readonly StringSplitOptions s_SplitOptionsForColectionUpload = StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries;
 
@@ -43,7 +44,12 @@ namespace AdPlatformsApi.Controllers
                     {
                         if (line.Split(':', 2, s_SplitOptionsForColectionUpload) is [string name, string locationsText])
                         {
-                            platforms.Add(new AdPlatform(name, locationsText.Split(',', s_SplitOptionsForColectionUpload).AsReadOnly()));
+                            var locations = locationsText.Split(',', s_SplitOptionsForColectionUpload).Where(IsLocationValid).ToArray();
+
+                            if (locations.Length > 0)
+                            {
+                                platforms.Add(new AdPlatform(name, locations.AsReadOnly()));
+                            }
                         }
                     }
                 }
@@ -62,16 +68,29 @@ namespace AdPlatformsApi.Controllers
             }
         }
 
-        private static string NormalizeLocationString(string? location)
+        public static string NormalizeLocationString(string? location)
         {
-            location ??= "";
+            location = location?.TrimEnd('/') ?? "";
 
             if (!location.StartsWith('/'))
             {
                 location = $"/{location}";
             }
 
-            return location.TrimEnd('/');
+            return location;
         }
+
+        public static bool IsLocationValid(string? location)
+        {
+            if (string.IsNullOrWhiteSpace(location))
+            {
+                return false;
+            }
+
+            return MyRegex().IsMatch(location);
+        }
+
+        [GeneratedRegex(@"^[\p{L}/]+$")]
+        private static partial Regex MyRegex();
     }
 }

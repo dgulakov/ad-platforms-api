@@ -12,7 +12,7 @@ namespace AdPlatformsApi.Model
             new("Крутая реклама", new ReadOnlyCollection<string>(["/ru/svrd"]))
         ];
 
-        private object _lock = new();
+        private readonly Lock _lock = new();
 
         public ReadOnlyCollection<AdPlatform> Items => _platforms.AsReadOnly();
 
