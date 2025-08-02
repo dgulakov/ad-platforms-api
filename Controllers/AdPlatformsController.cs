@@ -16,7 +16,7 @@ namespace AdPlatformsApi.Controllers
         }
 
         [HttpGet("search/{*location}")]
-        public IEnumerable<string> SearchPlatforms(string? location)
+        public IEnumerable<string> SearchPlatforms(string? location, int i)
         {
             location = NormalizeLocationString(location);
 

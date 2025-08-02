@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Hosting;
 using AdPlatformsApi.Model;
+using AdPlatformsApi.Handlers;
 
 namespace AdPlatformsApi
 {
@@ -14,12 +15,15 @@ namespace AdPlatformsApi
             builder.Services.AddSingleton<IAdPlatformsCollection, AdPlatformsCollection>();
             builder.Services.AddSingleton<AdPlatformsRepository>();
 
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
             builder.Services.AddControllers();
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-
+            
+            app.UseExceptionHandler(_ => { });
             app.UseAuthorization();
 
 
