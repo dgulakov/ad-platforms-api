@@ -17,6 +17,8 @@ namespace AdPlatformsApi
 
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
+            builder.Services.AddMemoryCache();
+
             builder.Services.AddControllers();
 
             var app = builder.Build();
