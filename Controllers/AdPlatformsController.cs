@@ -24,7 +24,7 @@ namespace AdPlatformsApi.Controllers
         }
 
         [HttpPut]
-        [RequestSizeLimit(2 * 1024 * 1024 /* 2Mb in bytes */)]
+        [RequestSizeLimit(2 * 1024 * 1024 /* 2MB in bytes */)]
         public async Task<IActionResult> UploadCollection()
         {
             try
@@ -51,6 +51,10 @@ namespace AdPlatformsApi.Controllers
                 platformsRepository.UploadAdPlatforms(platforms);
 
                 return Ok($"Processed {platforms.Count} lines successfully");
+            }
+            catch (BadHttpRequestException err) when (err.StatusCode == StatusCodes.Status413PayloadTooLarge)
+            {
+                return StatusCode(413, $"File exceeds 2MB size limit.");
             }
             catch (Exception err)
             {
