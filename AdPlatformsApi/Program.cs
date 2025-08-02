@@ -13,7 +13,7 @@ namespace AdPlatformsApi
 
             // Add services to the container.
             builder.Services.AddSingleton<IAdPlatformsCollection, AdPlatformsCollection>();
-            builder.Services.AddSingleton<AdPlatformsRepository>();
+            builder.Services.AddSingleton<IAdPlatformsRepository, AdPlatformsRepository>();
 
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 

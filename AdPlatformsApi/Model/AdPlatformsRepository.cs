@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace AdPlatformsApi.Model
 {
-    public class AdPlatformsRepository(IAdPlatformsCollection platformsCollection, IMemoryCache cache)
+    public class AdPlatformsRepository(IAdPlatformsCollection platformsCollection, IMemoryCache cache) : IAdPlatformsRepository
     {
         private static CancellationTokenSource _platformsTokenSource = new();
         private static readonly Lock _platformsTokenLock = new();
