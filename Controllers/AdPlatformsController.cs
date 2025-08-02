@@ -10,17 +10,17 @@ namespace AdPlatformsApi.Controllers
         private static readonly StringSplitOptions s_SplitOptionsForColectionUpload = StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries;
 
         [HttpGet]
-        public IEnumerable<AdPlatform> Get()
+        public async Task<IEnumerable<AdPlatform>> Get()
         {
-            return platformsRepository.GetPlatforms();
+            return await platformsRepository.GetPlatformsAsync();
         }
 
         [HttpGet("search/{*location}")]
-        public IEnumerable<string> SearchPlatforms(string? location)
+        public async Task<IEnumerable<string>> SearchPlatforms(string? location)
         {
             location = NormalizeLocationString(location);
 
-            return platformsRepository.SearchPlatformsInLocation(location);
+            return await platformsRepository.SearchPlatformsInLocationAsync(location);
         }
 
         [HttpPut]
@@ -48,7 +48,7 @@ namespace AdPlatformsApi.Controllers
                     }
                 }
 
-                platformsRepository.UploadAdPlatforms(platforms);
+                await platformsRepository.UploadAdPlatformsAsync(platforms);
 
                 return Ok($"Processed {platforms.Count} lines successfully");
             }
@@ -62,7 +62,7 @@ namespace AdPlatformsApi.Controllers
             }
         }
 
-        private string NormalizeLocationString(string? location)
+        private static string NormalizeLocationString(string? location)
         {
             location ??= "";
 

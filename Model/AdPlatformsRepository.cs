@@ -1,45 +1,55 @@
 ﻿using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Primitives;
+using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
 
 namespace AdPlatformsApi.Model
 {
-    public class AdPlatformsRepository(IAdPlatformsCollection platformsCollection, IMemoryCache cache, ILogger<AdPlatformsRepository> logger)
+    public class AdPlatformsRepository(IAdPlatformsCollection platformsCollection, IMemoryCache cache)
     {
         private static CancellationTokenSource _platformsTokenSource = new();
+        private static readonly Lock _platformsTokenLock = new();
 
-        public IEnumerable<string> SearchPlatformsInLocation(string location)
+        public async Task<IEnumerable<string>> SearchPlatformsInLocationAsync(string location)
         {
-            var cacheKey = $"{nameof(AdPlatformsRepository)}/{nameof(SearchPlatformsInLocation)}/{location.GetHashCode()}";
+            var cacheKey = $"{nameof(AdPlatformsRepository)}/{nameof(SearchPlatformsInLocationAsync)}/{location.GetHashCode()}";
 
-            return cache.GetOrCreate(cacheKey, cacheEntry =>
+            return await cache.GetOrCreateAsync(cacheKey, async cacheEntry =>
             {
                 cacheEntry.AddExpirationToken(new CancellationChangeToken(_platformsTokenSource.Token));
                 cacheEntry.SlidingExpiration = TimeSpan.FromSeconds(10);
 
                 bool locationIsEmpty = string.IsNullOrWhiteSpace(location.Trim('/'));
 
-                return (from item in platformsCollection.Items
-                       where locationIsEmpty || item.Locations.Any(platformLocation => platformLocation.StartsWith(location, StringComparison.OrdinalIgnoreCase))
-                       select item.PlatformName).ToList();
-            }) ?? [];
+                return await Task.Run(() =>
+                    (from item in platformsCollection.Items
+                     where locationIsEmpty || item.Locations.Any(platformLocation => platformLocation.StartsWith(location, StringComparison.OrdinalIgnoreCase))
+                     select item.PlatformName
+                    ).ToImmutableArray());
+            });
         }
 
-        public void UploadAdPlatforms(IEnumerable<AdPlatform> platforms)
+        public async Task UploadAdPlatformsAsync(IEnumerable<AdPlatform> platforms)
         {
-            platformsCollection.Clear();
-            platformsCollection.AddPlatforms(platforms);
+            await Task.Run(() =>
+            {
+                platformsCollection.Clear();
+                platformsCollection.AddPlatforms(platforms);
+            });
 
-            _platformsTokenSource.Cancel();
-            _platformsTokenSource.Dispose();
+            lock (_platformsTokenLock)
+            {
+                _platformsTokenSource.Cancel();
+                _platformsTokenSource.Dispose();
 
-            _platformsTokenSource = new CancellationTokenSource();
+                _platformsTokenSource = new CancellationTokenSource();
+            }
         }
 
-        public IEnumerable<AdPlatform> GetPlatforms()
+        public async Task<IEnumerable<AdPlatform>> GetPlatformsAsync()
         {
-            return platformsCollection.Items;
+            return await Task.FromResult(platformsCollection.Items);
         }
     }
 }

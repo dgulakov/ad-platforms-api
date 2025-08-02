@@ -12,12 +12,12 @@ namespace AdPlatformsApi.Handlers
             if (exception is ArgumentException argException)
             {
                 httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-                await httpContext.Response.WriteAsJsonAsync(new { error = argException.Message });
+                await httpContext.Response.WriteAsJsonAsync(new { error = argException.Message }, cancellationToken: CancellationToken.None);
             }
             else
             {
                 httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                await httpContext.Response.WriteAsJsonAsync(new { error = "Ooops! It wasn't me, but we will fix it ASAP." });
+                await httpContext.Response.WriteAsJsonAsync(new { error = "Ooops! It wasn't me, but we will fix it ASAP." }, cancellationToken: CancellationToken.None);
             }
 
             return true;
