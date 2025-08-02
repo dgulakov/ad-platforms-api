@@ -22,6 +22,7 @@ namespace AdPlatformsApi.Model
 
                 bool locationIsEmpty = string.IsNullOrWhiteSpace(location.Trim('/'));
 
+                // Perhaps it should be done in parallel because it's more CPU bound neither about pulling data from some persistent storage as database or webservice or distributed cache.
                 return await Task.Run(() =>
                     (from item in platformsCollection.Items
                      where locationIsEmpty || item.Locations.Any(platformLocation => platformLocation.StartsWith(location, StringComparison.OrdinalIgnoreCase))
