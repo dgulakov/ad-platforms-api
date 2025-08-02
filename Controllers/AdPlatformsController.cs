@@ -24,22 +24,38 @@ namespace AdPlatformsApi.Controllers
         }
 
         [HttpPut]
-        public async Task UploadCollection([FromBody] string collectionAsText)
+        [RequestSizeLimit(2 * 1024 * 1024 /* 2Mb in bytes */)]
+        public async Task<IActionResult> UploadCollection()
         {
-            List<AdPlatform> platforms = [];
-
-            using (var sr = new StringReader(collectionAsText))
+            try
             {
-                while (await sr.ReadLineAsync() is string platformLine)
+                if (!(this.Request.ContentType ?? "").Equals("text/plain", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (platformLine.Split(':', 2, s_SplitOptionsForColectionUpload) is [string name, string locationsText])
+                    return StatusCode(StatusCodes.Status415UnsupportedMediaType, "Only text/plain content is accepted");
+                }
+
+                List<AdPlatform> platforms = [];
+
+                Request.EnableBuffering();
+                using (var reader = new StreamReader(Request.Body))
+                {
+                    while (await reader.ReadLineAsync() is string line)
                     {
-                        platforms.Add(new AdPlatform(name, locationsText.Split(',', s_SplitOptionsForColectionUpload).AsReadOnly()));
+                        if (line.Split(':', 2, s_SplitOptionsForColectionUpload) is [string name, string locationsText])
+                        {
+                            platforms.Add(new AdPlatform(name, locationsText.Split(',', s_SplitOptionsForColectionUpload).AsReadOnly()));
+                        }
                     }
                 }
-            }
 
-            platformsRepository.UploadAdPlatforms(platforms);
+                platformsRepository.UploadAdPlatforms(platforms);
+
+                return Ok($"Processed {platforms.Count} lines successfully");
+            }
+            catch (Exception err)
+            {
+                return StatusCode(500, $"Processing error: {err.Message}");
+            }
         }
 
         private string NormalizeLocationString(string? location)
