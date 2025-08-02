@@ -1,6 +1,41 @@
 @AdPlatformsApi_HostAddress = http://localhost:5200
 
-GET {{AdPlatformsApi_HostAddress}}/weatherforecast/
+### Retrieve full listing of ad platforms in memory at this moment
+
+GET {{AdPlatformsApi_HostAddress}}/adplatforms/
 Accept: application/json
 
-###
+### Make a blank search when all ad platforms have to be returned
+
+GET {{AdPlatformsApi_HostAddress}}/adplatforms/search/
+Accept: application/json
+
+### Make a search for /ru region
+
+GET {{AdPlatformsApi_HostAddress}}/adplatforms/search/ru
+Accept: application/json
+
+### Make a more specific search for /ru/svrd
+
+GET {{AdPlatformsApi_HostAddress}}/adplatforms/search/ru/svrd
+Accept: application/json
+
+### Make a more specific search for location different than /ru/svrd
+
+GET {{AdPlatformsApi_HostAddress}}/adplatforms/search/ru/msk
+Accept: application/json
+
+### Make a fool search for any not existing location
+
+GET {{AdPlatformsApi_HostAddress}}/adplatforms/search/foo
+Accept: application/json
+
+### Try submit a new set of ad platforms which will overwrite existing listing in memory
+
+PUT {{AdPlatformsApi_HostAddress}}/adplatforms
+Content-Type: text/plain
+
+Яндекс.Директ:/ru
+Ревдинский рабочий:/ru/svrd/revda,/ru/svrd/pervik
+Газета москвичей:/ru/msk,/ru/permobl,/ru/chelobl
+Крутая реклама:/ru/svrd
