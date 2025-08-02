@@ -8,5 +8,7 @@ namespace AdPlatformsApi.Model
         Task<IEnumerable<string>> SearchPlatformsInLocationAsync(string location);
 
         Task UploadAdPlatformsAsync(IEnumerable<AdPlatform> platforms);
+
+        CancellationTokenSource GetCacheInvalidationTokenSource();
     }
 }

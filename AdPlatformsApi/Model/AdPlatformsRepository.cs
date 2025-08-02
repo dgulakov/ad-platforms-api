@@ -48,9 +48,8 @@ namespace AdPlatformsApi.Model
             }
         }
 
-        public async Task<IEnumerable<AdPlatform>> GetPlatformsAsync()
-        {
-            return await Task.FromResult(platformsCollection.Items);
-        }
+        public async Task<IEnumerable<AdPlatform>> GetPlatformsAsync() => await Task.FromResult(platformsCollection.Items);
+
+        public CancellationTokenSource GetCacheInvalidationTokenSource() => _platformsTokenSource;
     }
 }
