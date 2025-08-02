@@ -37,7 +37,7 @@ namespace AdPlatformsApi.Controllers
                 List<AdPlatform> platforms = [];
 
                 Request.EnableBuffering();
-                using (var reader = new StreamReader(Request.Body))
+                using (var reader = new StreamReader(Request.Body, leaveOpen: true, bufferSize: 1000))
                 {
                     while (await reader.ReadLineAsync() is string line)
                     {
